@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>HttpClientExtras</id>
+        <version>1.0.0</version>
+        <authors>Sergey Aldoukhov</authors>
+        <licenseUrl>http://opensource.org/licenses/ms-pl</licenseUrl>
+        <projectUrl>https://github.com/saldoukhov/HttpClientExtras</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Various handlers and extensions for HttpClient - OAuth1, Azure storage</description>
+        <summary />
+        <copyright>© Sergey Aldoukhov 2014</copyright>
+        <tags>httpclient oauth1 azurestorage</tags>
+        <dependencies>
+            <dependency id="Microsoft.Net.Http" version="2.2.18" />
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="lib\HttpClientExtras.dll" target="lib\HttpClientExtras.dll" />
+    </files>
+</package>
