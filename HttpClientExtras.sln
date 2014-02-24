@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpClientExtras.Net", "Htt
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpClientExtras.RT", "HttpClientExtras.RT\HttpClientExtras.RT.csproj", "{AE2F83C6-7BB8-4EA7-908B-AD787E71F4B0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpClientExtras.WP8", "HttpClientExtras.WP8\HttpClientExtras.WP8.csproj", "{135790AC-B9F8-47A3-9873-B1B82C0DA77E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,20 @@ Global
 		{AE2F83C6-7BB8-4EA7-908B-AD787E71F4B0}.Release|x64.Build.0 = Release|x64
 		{AE2F83C6-7BB8-4EA7-908B-AD787E71F4B0}.Release|x86.ActiveCfg = Release|x86
 		{AE2F83C6-7BB8-4EA7-908B-AD787E71F4B0}.Release|x86.Build.0 = Release|x86
+		{135790AC-B9F8-47A3-9873-B1B82C0DA77E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{135790AC-B9F8-47A3-9873-B1B82C0DA77E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{135790AC-B9F8-47A3-9873-B1B82C0DA77E}.Debug|ARM.ActiveCfg = Debug|ARM
+		{135790AC-B9F8-47A3-9873-B1B82C0DA77E}.Debug|ARM.Build.0 = Debug|ARM
+		{135790AC-B9F8-47A3-9873-B1B82C0DA77E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{135790AC-B9F8-47A3-9873-B1B82C0DA77E}.Debug|x86.ActiveCfg = Debug|x86
+		{135790AC-B9F8-47A3-9873-B1B82C0DA77E}.Debug|x86.Build.0 = Debug|x86
+		{135790AC-B9F8-47A3-9873-B1B82C0DA77E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{135790AC-B9F8-47A3-9873-B1B82C0DA77E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{135790AC-B9F8-47A3-9873-B1B82C0DA77E}.Release|ARM.ActiveCfg = Release|ARM
+		{135790AC-B9F8-47A3-9873-B1B82C0DA77E}.Release|ARM.Build.0 = Release|ARM
+		{135790AC-B9F8-47A3-9873-B1B82C0DA77E}.Release|x64.ActiveCfg = Release|Any CPU
+		{135790AC-B9F8-47A3-9873-B1B82C0DA77E}.Release|x86.ActiveCfg = Release|x86
+		{135790AC-B9F8-47A3-9873-B1B82C0DA77E}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

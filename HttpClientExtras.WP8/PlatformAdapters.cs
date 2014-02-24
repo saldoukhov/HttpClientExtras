@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace HttpClientExtras.Net
+namespace HttpClientExtras.WP8
 {
     internal class OAuthToolsPlatformAdapter : IOAuthToolsPlatformAdapter
     {
@@ -10,7 +10,7 @@ namespace HttpClientExtras.Net
         public int GetSeed()
         {
             var bytes = new byte[4];
-            new RNGCryptoServiceProvider().GetNonZeroBytes(bytes);
+            new RNGCryptoServiceProvider().GetBytes(bytes);
             return BitConverter.ToInt32(bytes, 0);
         }
 
