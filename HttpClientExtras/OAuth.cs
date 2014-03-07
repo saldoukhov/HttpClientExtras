@@ -11,19 +11,44 @@ namespace HttpClientExtras
 {
     public static class OAuth
     {
-        public static Dictionary<string, string> CreateOAuthParams(string consumerKey)
+
+        public static Dictionary<string, string> CreateOAuthParams()
         {
             var oauthParams = new Dictionary<string, string>();
-            oauthParams["oauth_consumer_key"] = consumerKey;
             oauthParams["oauth_nonce"] = OAuthTools.GetNonce();
             oauthParams["oauth_timestamp"] = OAuthTools.GetTimestamp();
-            oauthParams["oauth_signature_method"] = "HMAC-SHA1";
             oauthParams["oauth_version"] = "1.0";
             return oauthParams;
         }
 
-        public static string CreateSignature(HttpMethod method, Uri requestUri, 
-            Dictionary<string, string> oauthParams, Dictionary<string, string> requestParams, 
+        public static AuthenticationHeaderValue Sign(HttpMethod method, Uri requestUri,
+            Dictionary<string, string> oauthParams, Dictionary<string, string> requestParams,
+            string consumerSecret, string tokenSecret)
+        {
+            oauthParams["oauth_signature_method"] = "HMAC-SHA1";
+            oauthParams["oauth_signature"] = CreateSignature(method, requestUri,
+                                                                    oauthParams, requestParams,
+                                                                   consumerSecret, tokenSecret);
+            return GethAuthenticationHeaderValue(oauthParams);
+        }
+
+        public static AuthenticationHeaderValue GethAuthenticationHeaderValue(Dictionary<string, string> oauthParams)
+        {
+            var sortedParams = oauthParams
+                .OrderBy(kvp => kvp.Key)
+                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+            var oAuthHeader = string
+                .Concat(sortedParams
+                            .Where(x => !string.IsNullOrEmpty(x.Value))
+                            .Select(x => x.Key + @"=""" + x.Value + @""","))
+                .TrimEnd(',');
+
+            return new AuthenticationHeaderValue("OAuth", oAuthHeader);
+        }
+
+        private static string CreateSignature(HttpMethod method, Uri requestUri,
+            Dictionary<string, string> oauthParams, Dictionary<string, string> requestParams,
             string consumerSecret, string tokenSecret)
         {
             var sortedParams = requestParams
@@ -47,78 +72,32 @@ namespace HttpClientExtras
 
             return signature;
         }
-
-        public static string GetOAuthHeader(Dictionary<string, string> headerParams)
-        {
-            var sortedParams = headerParams
-                .OrderBy(kvp => kvp.Key)
-                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-
-            var header = string
-                .Concat(sortedParams
-                            .Where(x => !string.IsNullOrEmpty(x.Value))
-                            .Select(x => x.Key + @"=""" + x.Value + @""","))
-                .TrimEnd(',');
-
-            return header;
-        }
-    }
-
-    public class OAuthClientAuthMessageHandler : DelegatingHandler
-    {
-        private readonly string _consumerKey;
-        private readonly string _consumerSecret;
-        private readonly string _userName;
-        private readonly string _password;
-
-        public OAuthClientAuthMessageHandler(
-            string consumerKey,
-            string consumerSecret,
-            string userName,
-            string password)
-            : base(new HttpClientHandler())
-        {
-            _consumerKey = consumerKey;
-            _consumerSecret = consumerSecret;
-            _userName = userName;
-            _password = password;
-        }
-
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-        {
-            var oauthParams = OAuth.CreateOAuthParams(_consumerKey);
-            oauthParams["xoauth_login_name"] = OAuthTools.UrlEncodeStrict(_userName);
-            oauthParams["xoauth_password"] = OAuthTools.UrlEncodeStrict(_password);
-            oauthParams["xoauth_mode"] = "client_auth";
-            oauthParams["oauth_signature"] = OAuth.CreateSignature(HttpMethod.Get, request.RequestUri, 
-                                                                    oauthParams, new Dictionary<string, string>(), 
-                                                                   _consumerSecret, null);
-            var oAuthHeader = OAuth.GetOAuthHeader(oauthParams);
-            request.Headers.Authorization = new AuthenticationHeaderValue("OAuth", oAuthHeader);
-            return base.SendAsync(request, cancellationToken);
-        }
     }
 
     public class OAuthProtectedResourceMessageHandler : DelegatingHandler
     {
+        private readonly Action<Dictionary<string, string>> _customParamsAction;
         public string ConsumerKey { get; set; }
         public string ConsumerSecret { get; set; }
         public string AccessToken { get; set; }
         public string AccessTokenSecret { get; set; }
 
-        public OAuthProtectedResourceMessageHandler()
+        public OAuthProtectedResourceMessageHandler(Action<Dictionary<string, string>> customParamsAction)
             : base(new HttpClientHandler
-                {
-                    AutomaticDecompression = DecompressionMethods.GZip,
-                })
+            {
+                AutomaticDecompression = DecompressionMethods.GZip,
+            })
         {
+            _customParamsAction = customParamsAction;
         }
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            var oauthParams = OAuth.CreateOAuthParams(ConsumerKey);
+            var oauthParams = OAuth.CreateOAuthParams();
+            oauthParams["oauth_consumer_key"] = ConsumerKey;
             oauthParams["oauth_token"] = AccessToken;
-            var headerParams = new Dictionary<string, string>(oauthParams);
+            if (_customParamsAction != null)
+                _customParamsAction(oauthParams);
 
             var requestParams = OAuthTools.ParseQuery(request.RequestUri.Query);
 
@@ -130,11 +109,10 @@ namespace HttpClientExtras
                     requestParams[kv[0]] = kv[1];
             }
 
-            headerParams["oauth_signature"] = OAuth.CreateSignature(request.Method, request.RequestUri, 
-                                                                    oauthParams, requestParams,
-                                                                    ConsumerSecret, AccessTokenSecret);
-            var oAuthHeader = OAuth.GetOAuthHeader(headerParams);
-            request.Headers.Authorization = new AuthenticationHeaderValue("OAuth", oAuthHeader);
+            request.Headers.Authorization = OAuth.Sign(request.Method, request.RequestUri,
+                oauthParams, requestParams,
+                ConsumerSecret, AccessTokenSecret);
+
             return await base.SendAsync(request, cancellationToken);
         }
     }
