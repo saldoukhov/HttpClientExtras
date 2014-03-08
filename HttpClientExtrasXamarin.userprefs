@@ -1,0 +1,13 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="d:\Code\GitHub\HttpClientExtras\HttpClientExtras\Azure.cs">
+    <Files>
+      <File FileName="HttpClientExtras.Android\PlatformAdapters.cs" Line="13" Column="28" />
+      <File FileName="d:\Code\GitHub\HttpClientExtras\HttpClientExtras\Azure.cs" Line="8" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
