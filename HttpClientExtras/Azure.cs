@@ -36,7 +36,7 @@ namespace HttpClientExtras
         public AzureTableMessageHandler(string storageAccount, string accountKey)
             : base(new HttpClientHandler
                 {
-                  //AutomaticDecompression = DecompressionMethods.GZip,
+                    AutomaticDecompression = DecompressionMethods.GZip,
                 })
         {
             _storageAccount = storageAccount;
